@@ -60,6 +60,37 @@ Les polices Geist sont chargées en local via le paquet `geist` : aucune requêt
 - Deux sorties : **Copier le texte** (presse-papier) et **Exporter les réponses**, qui télécharge un fichier HTML autonome contenant les réponses et les images intégrées.
 - Rien n'est envoyé sur un serveur. Tout reste dans le navigateur tant qu'on n'exporte pas.
 
-## Mise en ligne, plus tard
+## Mise en ligne
 
-Le projet est prêt pour Vercel. Si les réponses doivent arriver directement dans une boîte mail ou une base, il faudra ajouter une route d'API : c'est une demi-journée de travail, à faire au moment de la mise en ligne.
+Le dépôt est prêt en local : branche `main`, deux commits, remote déjà configuré sur
+`https://github.com/odunepro-oss/questionnaires-M.Cherif.git`.
+
+### 1. Envoyer sur GitHub
+
+Dans le Terminal :
+
+```
+cd ~/Documents/Claude/Projects/CHERIF/04-QUESTIONNAIRES
+git push -u origin main
+```
+
+C'est ton compte GitHub qui doit s'authentifier, donc cette commande est à lancer par toi.
+Si git demande un mot de passe, il attend un jeton d'accès personnel, pas le mot de passe du compte.
+
+### 2. Mettre en ligne sur Vercel
+
+Sur https://vercel.com, équipe **odune's projects** :
+
+1. **Add New → Project**
+2. Choisir le dépôt `odunepro-oss/questionnaires-M.Cherif`
+3. Vercel détecte Next.js tout seul, ne rien changer
+4. **Deploy**
+
+Ensuite, chaque `git push` redéploie automatiquement.
+
+### Recevoir les réponses par mail
+
+Aujourd'hui les réponses restent dans le navigateur de la personne qui remplit : elle exporte
+et t'envoie le fichier. Pour qu'elles arrivent directement dans ta boîte mail ou dans une base,
+il faut ajouter une route d'API et un service d'envoi. Une demi-journée de travail, à faire
+seulement si tu veux que Mehdi n'ait rien à renvoyer.
