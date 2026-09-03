@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Odune · Questionnaires de cadrage</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F7F6F4;
+    --ink:#231A18;
+    --ink-soft:#5C534D;
+    --muted:#A39A92;
+    --line:#E3DFD9;
+    --line-strong:#CFC9C1;
+    --paper:#FFFFFF;
+    --accent:#231A18;
+    --mono:'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:var(--mono); font-weight:300;
+    font-size:15px; line-height:1.65; letter-spacing:-0.01em;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--ink); color:var(--bg)}
+
+  /* ---------- nav ---------- */
+  .nav{
+    position:fixed; top:18px; left:18px; right:18px; z-index:50;
+    display:flex; align-items:center; gap:22px;
+    background:var(--ink); color:#F3EFEA;
+    border-radius:10px; padding:11px 18px;
+    max-width:max-content;
+  }
+  .nav .brand{display:flex; align-items:center; gap:9px; font-size:17px; letter-spacing:-0.03em; font-weight:400}
+  .nav .brand svg{width:19px; height:19px; display:block}
+  .nav .sep{width:1px; height:16px; background:rgba(243,239,234,.22)}
+  .nav button{
+    background:none; border:0; color:rgba(243,239,234,.72);
+    font-family:inherit; font-size:12.5px; font-weight:300; letter-spacing:-0.01em;
+    cursor:pointer; padding:2px 0; transition:color .18s;
+  }
+  .nav button:hover, .nav button[aria-current="true"]{color:#F3EFEA}
+
+  /* ---------- layout ---------- */
+  .wrap{max-width:820px; margin:0 auto; padding:0 28px}
+  .view{display:none; animation:fade .5s ease both}
+  .view.on{display:block}
+  @keyframes fade{from{opacity:0; transform:translateY(8px)} to{opacity:1; transform:none}}
+
+  /* ---------- home ---------- */
+  .hero{min-height:100svh; display:flex; flex-direction:column; justify-content:center; padding:130px 0 70px}
+  .hero h1{
+    font-size:clamp(26px,4.1vw,42px); font-weight:300; line-height:1.28;
+    letter-spacing:-0.035em; margin:0 0 26px; max-width:16ch;
+  }
+  .hero p{color:var(--ink-soft); max-width:56ch; margin:0 0 12px; font-size:14.5px}
+  .eyebrow{font-size:11.5px; color:var(--muted); letter-spacing:.06em; text-transform:uppercase; margin:0 0 22px}
+
+  .choice{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:52px}
+  .card{
+    background:var(--paper); border:1px solid var(--line); border-radius:12px;
+    padding:26px 24px 22px; cursor:pointer; text-align:left;
+    font-family:inherit; color:inherit; transition:border-color .2s, transform .2s;
+    display:flex; flex-direction:column; gap:10px; min-height:190px;
+  }
+  .card:hover{border-color:var(--ink); transform:translateY(-2px)}
+  .card .num{font-size:11.5px; color:var(--muted)}
+  .card h2{font-size:19px; font-weight:400; letter-spacing:-0.03em; margin:0}
+  .card p{font-size:13px; color:var(--ink-soft); margin:0; line-height:1.6}
+  .card .go{margin-top:auto; font-size:12px; color:var(--muted)}
+
+  /* ---------- questionnaire ---------- */
+  .qhead{padding:150px 0 44px; border-bottom:1px solid var(--line)}
+  .qhead h1{font-size:clamp(24px,3.4vw,34px); font-weight:300; letter-spacing:-0.035em; margin:0 0 20px; max-width:22ch}
+  .qhead .lede{color:var(--ink-soft); max-width:60ch; font-size:14px; margin:0 0 8px}
+
+  .grp{padding:52px 0 8px; border-bottom:1px solid var(--line)}
+  .grp:last-of-type{border-bottom:0}
+  .grp > h3{
+    font-size:11.5px; letter-spacing:.09em; text-transform:uppercase;
+    color:var(--muted); font-weight:400; margin:0 0 6px;
+  }
+  .grp > .gnote{font-size:13px; color:var(--ink-soft); margin:0 0 30px; max-width:60ch}
+
+  .q{margin:0 0 34px}
+  .q label{display:block; font-size:14.5px; font-weight:400; margin:0 0 6px; letter-spacing:-0.015em}
+  .q label .n{color:var(--muted); font-weight:300; margin-right:9px}
+  .q .hint{font-size:12.5px; color:var(--muted); margin:0 0 12px; max-width:62ch; line-height:1.6}
+  .q textarea, .q input[type=text]{
+    width:100%; font-family:inherit; font-size:14px; font-weight:300; color:var(--ink);
+    background:var(--paper); border:1px solid var(--line); border-radius:8px;
+    padding:13px 14px; resize:vertical; line-height:1.6; transition:border-color .18s;
+  }
+  .q textarea{min-height:88px}
+  .q textarea:focus, .q input[type=text]:focus{outline:none; border-color:var(--ink)}
+  .q textarea::placeholder, .q input::placeholder{color:#C7C0B8}
+
+  /* ---------- image slot ---------- */
+  .slot{margin:0 0 44px}
+  .slot .drop{
+    border:1px dashed var(--line-strong); border-radius:10px; background:transparent;
+    padding:20px; width:100%; cursor:pointer; font-family:inherit;
+    color:var(--muted); font-size:12.5px; font-weight:300; text-align:center;
+    transition:border-color .18s, color .18s;
+  }
+  .slot .drop:hover, .slot .drop.over{border-color:var(--ink); color:var(--ink)}
+  .thumbs{display:flex; flex-wrap:wrap; gap:10px; margin-top:12px}
+  .thumb{position:relative; width:104px; border:1px solid var(--line); border-radius:8px; overflow:hidden; background:var(--paper)}
+  .thumb img{display:block; width:100%; height:78px; object-fit:cover}
+  .thumb .nm{font-size:10px; color:var(--muted); padding:5px 6px; word-break:break-all; line-height:1.35}
+  .thumb .x{
+    position:absolute; top:5px; right:5px; width:19px; height:19px; border-radius:50%;
+    background:var(--ink); color:#F3EFEA; border:0; cursor:pointer;
+    font-family:inherit; font-size:11px; line-height:1; display:grid; place-items:center;
+  }
+
+  /* ---------- bar ---------- */
+  .bar{
+    position:fixed; left:0; right:0; bottom:0; z-index:40;
+    background:rgba(247,246,244,.93); backdrop-filter:blur(10px);
+    border-top:1px solid var(--line); display:none;
+  }
+  .bar.on{display:block}
+  .bar .inner{max-width:820px; margin:0 auto; padding:13px 28px; display:flex; align-items:center; gap:16px; flex-wrap:wrap}
+  .prog{flex:1; min-width:150px; display:flex; align-items:center; gap:11px}
+  .track{flex:1; height:2px; background:var(--line-strong); border-radius:2px; overflow:hidden}
+  .fill{height:100%; width:0%; background:var(--ink); transition:width .3s}
+  .pct{font-size:11.5px; color:var(--muted); white-space:nowrap}
+  .btn{
+    font-family:inherit; font-size:12.5px; font-weight:300; letter-spacing:-0.01em;
+    padding:9px 17px; border-radius:7px; cursor:pointer; transition:opacity .18s, background .18s;
+    border:1px solid var(--line-strong); background:transparent; color:var(--ink);
+  }
+  .btn:hover{border-color:var(--ink)}
+  .btn.solid{background:var(--ink); color:#F3EFEA; border-color:var(--ink)}
+  .btn.solid:hover{opacity:.85}
+  .save-note{font-size:11px; color:var(--muted); width:100%; margin:0}
+
+  .foot{padding:60px 0 130px; color:var(--muted); font-size:11.5px}
+
+  @media (max-width:700px){
+    .choice{grid-template-columns:1fr}
+    .qhead{padding-top:120px}
+    .nav{gap:14px; padding:10px 14px}
+    .nav button{font-size:12px}
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <span class="brand">
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle cx="12" cy="12" r="10.2" stroke="currentColor" stroke-width="1.6"/>
+      <circle cx="12" cy="12" r="5.4" stroke="currentColor" stroke-width="1.6"/>
+      <path d="M3.4 8.2 A10.2 10.2 0 0 1 12 1.8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+    </svg>
+    Odune
+  </span>
+  <span class="sep"></span>
+  <button data-go="home">Accueil</button>
+  <button data-go="patrinove">Patrinove</button>
+  <button data-go="soins">Soins intimes</button>
+</nav>
+
+<!-- ============ HOME ============ -->
+<section class="view on" id="v-home">
+  <div class="wrap">
+    <div class="hero">
+      <p class="eyebrow">Odune · Questionnaires de cadrage</p>
+      <h1>Avant de proposer, comprendre.</h1>
+      <p>Deux projets, deux questionnaires. Chaque question sert à cerner le projet, ce qui existe déjà, ce qui coince, et ce que nous pouvons réellement apporter.</p>
+      <p>Répondez librement, en une ligne ou en dix. Une réponse « je ne sais pas encore » est une information utile. Vos réponses sont enregistrées dans votre navigateur au fur et à mesure, et vous pouvez revenir plus tard.</p>
+
+      <div class="choice">
+        <button class="card" data-go="patrinove">
+          <span class="num">01</span>
+          <h2>Patrinove</h2>
+          <p>Conseil patrimonial, financement, assurance. Positionnement, image, acquisition, événements.</p>
+          <span class="go">15 questions ·  ~15 min →</span>
+        </button>
+        <button class="card" data-go="soins">
+          <span class="num">02</span>
+          <h2>Marque de soins intimes</h2>
+          <p>Soin intime féminin. Marque, produit, cadre réglementaire, marché, distribution.</p>
+          <span class="go">16 questions ·  ~15 min →</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ QUESTIONNAIRES ============ -->
+<section class="view" id="v-patrinove"><div class="wrap"><div id="c-patrinove"></div><p class="foot">Odune · Studio-conseil, Paris · contact@odune.fr</p></div></section>
+<section class="view" id="v-soins"><div class="wrap"><div id="c-soins"></div><p class="foot">Odune · Studio-conseil, Paris · contact@odune.fr</p></div></section>
+
+<div class="bar" id="bar">
+  <div class="inner">
+    <div class="prog"><div class="track"><div class="fill" id="fill"></div></div><span class="pct" id="pct">0 / 0</span></div>
+    <button class="btn" id="copy">Copier le texte</button>
+    <button class="btn solid" id="export">Exporter les réponses</button>
+    <p class="save-note" id="note">Enregistrement automatique dans ce navigateur.</p>
+  </div>
+</div>
+
+<script>
+const DATA = {
+  patrinove: {
+    title: "Patrinove",
+    lede: [
+      "Ce questionnaire sert à comprendre où en est Patrinove aujourd'hui, ce qui fonctionne déjà, et sur quoi une intervention aurait le plus d'effet.",
+      "Il n'y a pas de bonne réponse. Ce qui est utile, c'est ce que vous constatez, pas ce qui devrait être."
+    ],
+    groups: [
+      {
+        title: "Le cadre",
+        note: "Pour savoir de quoi on parle et avec qui.",
+        images: false,
+        qs: [
+          {q:"Le projet porte sur Patrinove Ouest, Patrinove Assurances, ou les deux ?", hint:"Les deux structures n'ont ni la même activité ni les mêmes contraintes. Savoir laquelle porte le projet change tout le reste."},
+          {q:"Qui décide et valide : vous seul, ou avec Abdel El Marzouki ?"},
+          {q:"Comment vous répartissez-vous les rôles au quotidien ?"},
+          {q:"À quelle échéance souhaitez-vous voir un changement ?", hint:"Un trimestre, six mois, un an. Une échéance, même approximative, suffit."}
+        ]
+      },
+      {
+        title: "Ce que vous êtes",
+        note: "Le positionnement se construit à partir de là, pas à partir d'une idée abstraite.",
+        images: true,
+        imageNote: "Si vous avez des supports existants (plaquette, présentation, captures de publicités, photos de l'équipe ou des bureaux), ajoutez-les ici.",
+        qs: [
+          {q:"Quelle cible servez-vous aujourd'hui, et laquelle voulez-vous servir demain ?", hint:"Décrivez un client type actuel, puis le client type que vous aimeriez voir arriver."},
+          {q:"Quel est votre point fort, celui que personne d'autre n'a vraiment ?"},
+          {q:"Qu'est-ce que vos clients disent qui les a décidés à vous choisir ?", hint:"Leurs mots à eux, si vous vous en souvenez, valent mieux qu'un résumé."},
+          {q:"Quels cabinets ou quelles marques vous servent de référence, en bien comme en mal ?", hint:"Y compris hors de votre secteur. Et dites pourquoi."}
+        ]
+      },
+      {
+        title: "Ce qui existe déjà",
+        note: "Inutile de refaire ce qui fonctionne. Autant savoir ce qui a été tenté.",
+        images: true,
+        imageNote: "Captures d'écran de campagnes, de statistiques, de messages types, de posts LinkedIn.",
+        qs: [
+          {q:"Comment arrivent vos clients aujourd'hui : publicité, réseau, recommandation, apporteurs d'affaires ?", hint:"Une répartition approximative en pourcentage nous suffit."},
+          {q:"Publicité : quel budget mettez-vous en ce moment, sur quelles plateformes, et qu'est-ce que cela produit exactement ?", hint:"Le point important est le « exactement » : des clics, des formulaires remplis, des rendez-vous tenus, ou des dossiers signés ? Ce ne sont pas les mêmes choses et cela change complètement la lecture."},
+          {q:"Combien de rendez-vous par mois, et combien se transforment en dossier ?"},
+          {q:"Qu'est-ce qui a déjà été fait côté marque et communication, et par qui ?", hint:"Logo, site, réseaux sociaux, plaquette, photos, vidéos. En interne, par une agence, par un freelance."},
+          {q:"Qui gère le site aujourd'hui, et avec quel outil ?"},
+          {q:"Quel est votre numéro ORIAS et quels statuts détenez-vous ?", hint:"COA, MIA, IOBSP, IAS. Ces mentions sont obligatoires sur le site et n'y figurent pas aujourd'hui : autant les remettre au passage."},
+          {q:"Sur le projet des 2 millions : qu'est-ce qui peut être dit publiquement, et à partir de quand ?", hint:"Nous n'avons pas besoin du détail. Nous avons besoin de savoir ce que la communication a le droit d'annoncer, et ce qu'elle doit taire."}
+        ]
+      }
+    ]
+  },
+
+  soins: {
+    title: "Marque de soins intimes",
+    lede: [
+      "Ce questionnaire sert à comprendre le produit, son cadre réglementaire et le territoire de marque visé.",
+      "Le réglementaire conditionne tout le travail créatif : tant que les allégations ne sont pas arrêtées, ni le site ni le packaging ne peuvent être figés. D'où les questions de la troisième partie."
+    ],
+    groups: [
+      {
+        title: "Le cadre",
+        note: "Qui porte le projet et à quel horizon.",
+        images: false,
+        qs: [
+          {q:"Qui est le gynécologue associé au projet, quel est son rôle, et souhaite-t-il être visible ?", hint:"Caution scientifique en retrait ou visage public de la marque : les deux se défendent, mais ce ne sont pas les mêmes marques."},
+          {q:"Qui décide et valide : vous, lui, ou les deux ?"},
+          {q:"Quelle date de lancement visez-vous ?"}
+        ]
+      },
+      {
+        title: "Le produit",
+        note: "Ce que vous vendez, concrètement.",
+        images: true,
+        imageNote: "Photos d'échantillons, de prototypes de packaging, de textes d'étiquetage, de documents laboratoire.",
+        qs: [
+          {q:"Quelles sont les références de la gamme, et à quel moment chacune sert ?", hint:"Le nom provisoire, la fonction, le moment d'usage."},
+          {q:"Qu'est-ce qui rend vos formules différentes de ce qui existe déjà ?"},
+          {q:"Quel laboratoire ou façonnier vous accompagne ?"}
+        ]
+      },
+      {
+        title: "Le réglementaire",
+        note: "C'est le point bloquant pour la suite. Sans ces réponses, aucun texte de site ni de packaging ne peut être arrêté.",
+        images: true,
+        imageNote: "Dossiers, attestations, rapports de tests, projets d'étiquetage.",
+        qs: [
+          {q:"Le statut cosmétique est-il confirmé pour chaque référence ?", hint:"Un produit destiné à la muqueuse interne ne relève pas du même régime qu'un soin de la peau intime externe."},
+          {q:"Les dossiers d'information produit et la notification européenne sont-ils faits ?"},
+          {q:"Quelles allégations sont déjà validées et opposables ?", hint:"Ce que vous avez le droit d'écrire noir sur blanc, preuves à l'appui, sur le produit fini."},
+          {q:"Avez-vous un conseil réglementaire cosmétique dans l'équipe ou en prestataire ?"}
+        ]
+      },
+      {
+        title: "Le marché",
+        note: "À qui, où, et contre qui.",
+        images: true,
+        imageNote: "Références visuelles, marques que vous aimez, univers qui vous parlent, ou au contraire ce que vous refusez.",
+        qs: [
+          {q:"À qui s'adresse la gamme en priorité, et à quel moment de vie ?"},
+          {q:"Où voulez-vous vendre : e-commerce, pharmacie, institut, prescription, export ?"},
+          {q:"Quelles marques vous servent de référence, en bien comme en mal ?", hint:"Dans le soin intime ou ailleurs. Dites ce que vous leur enviez, et ce que vous leur reprochez."},
+          {q:"Qu'est-ce que vous ne voulez surtout pas que la marque devienne ?", hint:"Cette question évite beaucoup d'allers-retours par la suite."}
+        ]
+      },
+      {
+        title: "Ce qui existe déjà",
+        note: "",
+        images: true,
+        imageNote: "Nom, logo, moodboards, essais graphiques, maquettes, comptes réseaux.",
+        qs: [
+          {q:"Y a-t-il déjà un nom, un logo, un début d'identité, des visuels, des comptes sur les réseaux ?"},
+          {q:"Qui gérera le site au quotidien une fois en ligne ?", hint:"Cela détermine le choix de la plateforme et le niveau de formation à prévoir."}
+        ]
+      }
+    ]
+  }
+};
+
+/* ---------------- state ---------------- */
+const KEY = 'odune-cherif-questionnaires-v1';
+let store = {};
+let images = {};                 // { slotId: [{name, data}] }
+let current = 'home';
+
+try { store = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch(e){ store = {}; }
+
+function persist(){
+  try { localStorage.setItem(KEY, JSON.stringify(store)); }
+  catch(e){ document.getElementById('note').textContent =
+    "Enregistrement automatique indisponible dans ce navigateur. Pensez à exporter vos réponses avant de fermer."; }
+}
+
+/* ---------------- render ---------------- */
+function esc(s){ return (s||'').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+function build(key){
+  const d = DATA[key];
+  let n = 0;
+  let html = '<div class="qhead"><h1>' + esc(d.title) + '</h1>' +
+    d.lede.map(p => '<p class="lede">' + esc(p) + '</p>').join('') + '</div>';
+
+  d.groups.forEach((g, gi) => {
+    html += '<div class="grp"><h3>' + esc(g.title) + '</h3>';
+    if (g.note) html += '<p class="gnote">' + esc(g.note) + '</p>';
+    g.qs.forEach(q => {
+      n++;
+      const id = key + '-q' + n;
+      html += '<div class="q"><label for="' + id + '"><span class="n">' +
+        String(n).padStart(2,'0') + '</span>' + esc(q.q) + '</label>';
+      if (q.hint) html += '<p class="hint">' + esc(q.hint) + '</p>';
+      html += '<textarea id="' + id + '" data-k="' + id + '" placeholder="Votre réponse"></textarea></div>';
+    });
+    if (g.images){
+      const sid = key + '-img' + gi;
+      html += '<div class="slot" data-slot="' + sid + '">' +
+        '<button class="drop" type="button">' + esc(g.imageNote || 'Ajouter une image, si utile') + '<br><span style="opacity:.65">Cliquer ou déposer un fichier</span></button>' +
+        '<input type="file" accept="image/*" multiple hidden>' +
+        '<div class="thumbs"></div></div>';
+    }
+    html += '</div>';
+  });
+
+  const el = document.getElementById('c-' + key);
+  el.innerHTML = html;
+
+  el.querySelectorAll('textarea').forEach(t => {
+    const k = t.dataset.k;
+    if (store[k]) { t.value = store[k]; autogrow(t); }
+    t.addEventListener('input', () => { store[k] = t.value; persist(); autogrow(t); progress(); });
+  });
+
+  el.querySelectorAll('.slot').forEach(slot => {
+    const sid = slot.dataset.slot;
+    const btn = slot.querySelector('.drop');
+    const inp = slot.querySelector('input[type=file]');
+    images[sid] = images[sid] || [];
+    btn.addEventListener('click', () => inp.click());
+    btn.addEventListener('dragover', e => { e.preventDefault(); btn.classList.add('over'); });
+    btn.addEventListener('dragleave', () => btn.classList.remove('over'));
+    btn.addEventListener('drop', e => { e.preventDefault(); btn.classList.remove('over'); addFiles(sid, e.dataTransfer.files, slot); });
+    inp.addEventListener('change', () => addFiles(sid, inp.files, slot));
+  });
+}
+
+function autogrow(t){ t.style.height='auto'; t.style.height = Math.max(88, t.scrollHeight) + 'px'; }
+
+function addFiles(sid, files, slot){
+  [...files].forEach(f => {
+    if (!f.type.startsWith('image/')) return;
+    const r = new FileReader();
+    r.onload = () => { images[sid].push({name:f.name, data:r.result}); drawThumbs(sid, slot); };
+    r.readAsDataURL(f);
+  });
+}
+
+function drawThumbs(sid, slot){
+  const box = slot.querySelector('.thumbs');
+  box.innerHTML = images[sid].map((im, i) =>
+    '<div class="thumb"><button class="x" data-i="' + i + '" title="Retirer">×</button>' +
+    '<img src="' + im.data + '" alt=""><div class="nm">' + esc(im.name) + '</div></div>').join('');
+  box.querySelectorAll('.x').forEach(b =>
+    b.addEventListener('click', () => { images[sid].splice(+b.dataset.i, 1); drawThumbs(sid, slot); }));
+}
+
+/* ---------------- progress ---------------- */
+function progress(){
+  if (current === 'home') return;
+  const t = document.querySelectorAll('#c-' + current + ' textarea');
+  const done = [...t].filter(x => x.value.trim().length > 0).length;
+  document.getElementById('pct').textContent = done + ' / ' + t.length;
+  document.getElementById('fill').style.width = (t.length ? done / t.length * 100 : 0) + '%';
+}
+
+/* ---------------- nav ---------------- */
+function go(key){
+  current = key;
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('on'));
+  document.getElementById('v-' + key).classList.add('on');
+  document.querySelectorAll('.nav button').forEach(b => b.setAttribute('aria-current', b.dataset.go === key));
+  document.getElementById('bar').classList.toggle('on', key !== 'home');
+  window.scrollTo({top:0, behavior:'instant'});
+  if (key !== 'home') progress();
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-go]');
+  if (b) go(b.dataset.go);
+});
+
+/* ---------------- export ---------------- */
+function asText(key){
+  const d = DATA[key];
+  let n = 0;
+  let out = 'ODUNE · QUESTIONNAIRE DE CADRAGE\n' + d.title.toUpperCase() +
+    '\n' + new Date().toLocaleString('fr-FR') + '\n\n';
+  d.groups.forEach(g => {
+    out += '\n— ' + g.title.toUpperCase() + ' —\n\n';
+    g.qs.forEach(q => {
+      n++;
+      out += String(n).padStart(2,'0') + '. ' + q.q + '\n';
+      out += (store[key + '-q' + n] || '(sans réponse)').trim() + '\n\n';
+    });
+  });
+  return out;
+}
+
+document.getElementById('copy').addEventListener('click', async () => {
+  const btn = document.getElementById('copy');
+  try { await navigator.clipboard.writeText(asText(current)); btn.textContent = 'Copié'; }
+  catch(e){ btn.textContent = 'Copie refusée'; }
+  setTimeout(() => btn.textContent = 'Copier le texte', 1800);
+});
+
+document.getElementById('export').addEventListener('click', () => {
+  const d = DATA[current];
+  let n = 0;
+  let body = '<h1>' + esc(d.title) + '</h1><p class="meta">Questionnaire de cadrage Odune · ' +
+    new Date().toLocaleString('fr-FR') + '</p>';
+  d.groups.forEach((g, gi) => {
+    body += '<h2>' + esc(g.title) + '</h2>';
+    g.qs.forEach(q => {
+      n++;
+      body += '<div class="qa"><p class="qq">' + String(n).padStart(2,'0') + '. ' + esc(q.q) + '</p>' +
+        '<p class="aa">' + esc((store[current + '-q' + n] || '(sans réponse)').trim()).replace(/\n/g,'<br>') + '</p></div>';
+    });
+    const sid = current + '-img' + gi;
+    if (images[sid] && images[sid].length){
+      body += '<div class="imgs">' + images[sid].map(im =>
+        '<figure><img src="' + im.data + '"><figcaption>' + esc(im.name) + '</figcaption></figure>').join('') + '</div>';
+    }
+  });
+  const doc = '<!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><title>Odune · ' +
+    esc(d.title) + '</title><style>body{font-family:ui-monospace,Menlo,Consolas,monospace;font-weight:300;' +
+    'background:#F7F6F4;color:#231A18;max-width:760px;margin:0 auto;padding:56px 28px;line-height:1.65;font-size:14px}' +
+    'h1{font-weight:400;letter-spacing:-.03em;font-size:26px;margin:0 0 6px}' +
+    '.meta{color:#A39A92;font-size:12px;margin:0 0 44px}' +
+    'h2{font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;color:#A39A92;font-weight:400;' +
+    'margin:44px 0 20px;border-top:1px solid #E3DFD9;padding-top:22px}' +
+    '.qq{margin:0 0 6px;font-weight:400}.aa{margin:0 0 26px;color:#5C534D;white-space:pre-wrap}' +
+    '.imgs{display:flex;flex-wrap:wrap;gap:14px;margin:0 0 30px}' +
+    'figure{margin:0;width:200px}figure img{width:100%;border:1px solid #E3DFD9;border-radius:8px;display:block}' +
+    'figcaption{font-size:10.5px;color:#A39A92;padding-top:5px}</style></head><body>' + body + '</body></html>';
+  const blob = new Blob([doc], {type:'text/html'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'odune-questionnaire-' + current + '.html';
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+});
+
+/* ---------------- init ---------------- */
+build('patrinove');
+build('soins');
+go('home');
+</script>
+</body>
+</html>
