@@ -21,10 +21,6 @@ export const QUESTIONNAIRES = {
           },
           { q: "Qui décide et valide : vous seul, ou avec Abdel El Marzouki ?" },
           { q: "Comment vous répartissez-vous les rôles au quotidien ?" },
-          {
-            q: "À quelle échéance souhaitez-vous voir un changement ?",
-            hint: "Un trimestre, six mois, un an. Un ordre de grandeur suffit.",
-          },
         ],
       },
       {
@@ -41,6 +37,10 @@ export const QUESTIONNAIRES = {
           {
             q: "Qu'est-ce que vos clients disent qui les a décidés à vous choisir ?",
             hint: "Leurs mots à eux, si vous vous en souvenez, valent mieux qu'un résumé.",
+          },
+          {
+            q: "Quelles objections reviennent le plus souvent chez vos prospects ?",
+            hint: "Ce qu'ils vous disent quand ils hésitent, ou ce qu'ils vous répondent quand ils disent non. C'est la matière première du positionnement et des contenus.",
           },
           {
             q: "Quels cabinets ou quelles marques vous servent de référence, en bien comme en mal ?",
@@ -79,6 +79,24 @@ export const QUESTIONNAIRES = {
           {
             q: "Les 2 millions d'euros, c'est quoi exactement : une levée de fonds, un investissement, autre chose ?",
             hint: "Quel est l'objectif de cette opération, et à quoi servira l'argent ? Et peut-on communiquer dessus, ou pas encore ?",
+          },
+        ],
+      },
+      {
+        title: "Ce que vous attendez",
+        note: "Les trois réponses qui déterminent la forme de l'accompagnement.",
+        questions: [
+          {
+            q: "Quel résultat concret voulez-vous voir dans six mois ?",
+            hint: "Plus de dossiers, des dossiers plus importants, une image différente, un canal qui décolle. Et si votre échéance n'est pas six mois, dites laquelle.",
+          },
+          {
+            q: "Jusqu'où peut-on aller sur la marque ? Le nom et le logo sont-ils intouchables, ou tout est ouvert ?",
+            hint: "Faire évoluer une identité ou en construire une nouvelle ne représentent ni le même travail, ni le même délai. C'est vous qui fixez la limite.",
+          },
+          {
+            q: "Qui, chez vous, peut consacrer du temps au contenu et aux événements ?",
+            hint: "Une ligne éditoriale ou un événement demandent quelqu'un côté Patrinove. Selon la réponse, nous vous accompagnons, ou nous produisons à votre place.",
           },
         ],
       },
