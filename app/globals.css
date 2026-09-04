@@ -148,29 +148,57 @@ textarea.ans::placeholder { color: var(--ink-30); }
 textarea.ans:focus { outline: none; border-bottom-color: var(--ink); }
 textarea.ans.filled { border-bottom-color: var(--ink-30); }
 
-/* ---------------- uploads ---------------- */
-.up { margin: 4px 0 30px 28px; }
-.up .zone {
-  width: 100%; text-align: left; cursor: pointer;
-  background: transparent; border: 1px dashed var(--ink-30);
-  border-radius: var(--radius); padding: 16px 18px;
-  font-size: 12.5px; color: var(--grey); line-height: 1.6;
-  transition: border-color .2s ease, color .2s ease, background .2s ease;
+/* ---------------- pieces jointes, liens et notes ---------------- */
+.extras {
+  margin: 8px 0 4px 28px;
+  border-top: 1px solid var(--ink-12);
+  padding: 22px 0 0;
+  border-radius: var(--radius);
+  transition: background .2s ease, box-shadow .2s ease;
 }
-.up .zone:hover, .up .zone[data-over="1"] { border-color: var(--ink); color: var(--ink); background: var(--ink-06); }
-.up .zone span { display: block; color: var(--ink-45); margin-top: 6px; }
-.up .grid { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
-.up figure {
-  position: relative; margin: 0; width: 116px;
+.extras.over { background: var(--ink-06); box-shadow: 0 0 0 12px var(--ink-06); }
+.extras .xlabel {
+  margin: 0 0 12px; font-size: 12.5px; color: var(--grey); line-height: 1.6; max-width: 62ch;
+}
+.attach {
+  border: 1px dashed var(--ink-30); background: transparent; border-radius: var(--radius);
+  padding: 8px 14px; font-size: 12.5px; cursor: pointer;
+  transition: border-color .2s ease, color .2s ease;
+}
+.attach span { color: var(--ink-45); }
+.attach:hover { border-color: var(--ink); }
+.attach:hover span { color: var(--grey); }
+
+.extras .grid { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+.extras figure {
+  position: relative; margin: 0; width: 118px;
   border: 1px solid var(--ink-12); border-radius: var(--radius); overflow: hidden; background: #fff;
 }
-.up figure img { display: block; width: 100%; height: 84px; object-fit: cover; }
-.up figcaption { font-size: 10px; color: var(--ink-45); padding: 6px 7px; word-break: break-all; line-height: 1.4; }
-.up .kill {
+.extras figure img { display: block; width: 100%; height: 84px; object-fit: cover; }
+.extras figure.doc .ext {
+  display: grid; place-items: center; height: 84px;
+  font-size: 12px; letter-spacing: 0.08em; color: var(--ink-45); background: var(--ink-06);
+}
+.extras figcaption {
+  font-size: 10px; color: var(--ink-45); padding: 6px 7px; word-break: break-all; line-height: 1.4;
+}
+.extras figcaption em { display: block; font-style: normal; opacity: .75; margin-top: 2px; }
+.extras .kill {
   position: absolute; top: 6px; right: 6px; width: 20px; height: 20px;
   border: 0; border-radius: 50%; background: var(--ink); color: var(--bg);
   cursor: pointer; font-size: 12px; line-height: 1; display: grid; place-items: center;
 }
+
+textarea.note-field {
+  display: block; width: 100%; resize: none; overflow: hidden; margin-top: 16px;
+  font: inherit; letter-spacing: inherit; color: var(--ink);
+  background: transparent; border: 0; border-bottom: 1px solid var(--ink-12);
+  padding: 4px 0 10px; min-height: 34px; line-height: 1.6; font-size: 14px;
+  transition: border-color .2s ease;
+}
+textarea.note-field::placeholder { color: var(--ink-30); }
+textarea.note-field:focus { outline: none; border-bottom-color: var(--ink); }
+textarea.note-field.filled { border-bottom-color: var(--ink-30); }
 
 /* ---------------- action bar ---------------- */
 .bar {
@@ -210,6 +238,6 @@ textarea.ans.filled { border-bottom-color: var(--ink-30); }
   .grp { grid-template-columns: 1fr; gap: 20px; }
   .grp .side { position: static; }
   .cards { grid-template-columns: 1fr; }
-  .q .hint, .q .field, .up { margin-left: 0; }
+  .q .hint, .q .field, .extras { margin-left: 0; }
   .qhead { padding-top: 120px; }
 }
