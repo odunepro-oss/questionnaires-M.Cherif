@@ -17,7 +17,6 @@ export default function Nav() {
       <Link href="/" className="mark" aria-label="Odune, accueil">
         <Logo height={17} />
       </Link>
-      <span className="rule" />
       {LINKS.map((l) => (
         <Link key={l.href} href={l.href} data-on={path === l.href ? "1" : "0"}>
           {l.label}

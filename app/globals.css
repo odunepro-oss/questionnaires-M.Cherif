@@ -61,8 +61,7 @@ button { font: inherit; letter-spacing: inherit; color: inherit; }
   border-radius: var(--radius);
   padding: 12px 18px;
 }
-.nav .mark { display: flex; align-items: center; padding-right: 2px; }
-.nav .rule { width: 1px; height: 15px; background: rgba(249, 248, 247, 0.22); }
+.nav .mark { display: flex; align-items: center; margin-right: 6px; }
 .nav a {
   font-size: 13px; color: rgba(249, 248, 247, 0.62);
   transition: color .2s ease; padding: 2px 0; white-space: nowrap;
