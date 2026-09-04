@@ -4,6 +4,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 const KEY = (slug) => `odune-cadrage-${slug}-v2`;
 const MAX_EMBED = 4 * 1024 * 1024; // au-delà, le fichier n'est pas intégré à l'export
+const MAX_DIM = 1800; // les images sont réduites avant tout envoi
+const MAX_ENVOI = 3.2 * 1024 * 1024; // limite de taille d'une requête, marge comprise
 
 const isImage = (f) => (f.type || "").startsWith("image/");
 const human = (n) => (n > 1048576 ? `${(n / 1048576).toFixed(1)} Mo` : `${Math.max(1, Math.round(n / 1024))} Ko`);
@@ -44,8 +46,45 @@ function Extras({ gi, label, files, onAdd, onRemove, note, onNote }) {
   const input = useRef(null);
   const [over, setOver] = useState(false);
 
+  // Les photos sortent des téléphones en plusieurs mégaoctets. On les réduit
+  // avant tout, sans quoi l'envoi dépasse la taille maximale d'une requête.
+  const shrink = (file) =>
+    new Promise((done) => {
+      if (!file.type.startsWith("image/")) return done(null);
+      const url = URL.createObjectURL(file);
+      const img = new Image();
+      img.onload = () => {
+        const k = Math.min(1, MAX_DIM / Math.max(img.width, img.height));
+        const w = Math.round(img.width * k);
+        const h = Math.round(img.height * k);
+        const canvas = document.createElement("canvas");
+        canvas.width = w;
+        canvas.height = h;
+        canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+        URL.revokeObjectURL(url);
+        try {
+          const data = canvas.toDataURL("image/jpeg", 0.82);
+          done({
+            name: file.name.replace(/\.[^.]+$/, "") + ".jpg",
+            type: "image/jpeg",
+            size: Math.round((data.length - 23) * 0.75),
+            data,
+          });
+        } catch (e) {
+          done(null);
+        }
+      };
+      img.onerror = () => {
+        URL.revokeObjectURL(url);
+        done(null);
+      };
+      img.src = url;
+    });
+
   const take = (list) => {
-    [...list].forEach((f) => {
+    [...list].forEach(async (f) => {
+      const small = await shrink(f);
+      if (small) return onAdd(small);
       const reader = new FileReader();
       reader.onload = () =>
         onAdd({ name: f.name, type: f.type, size: f.size, data: reader.result });
@@ -213,7 +252,7 @@ export default function Questionnaire({ data }) {
   };
 
   /* --------- récapitulatif HTML autonome --------- */
-  const buildHtml = () => {
+  const buildHtml = (light = false) => {
     const esc = (s) =>
       String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
     const linkify = (s) =>
@@ -236,7 +275,9 @@ export default function Questionnaire({ data }) {
       }
 
       (files[gi] || []).forEach((f) => {
-        if (isImage(f)) {
+        if (isImage(f) && light) {
+          body += `<p class="file">${esc(f.name)} <em>image trop lourde pour l'envoi, à réclamer séparément</em></p>`;
+        } else if (isImage(f)) {
           body += `<figure><img src="${f.data}"><figcaption>${esc(f.name)}</figcaption></figure>`;
         } else if ((f.size || 0) <= MAX_EMBED) {
           body += `<p class="file"><a href="${f.data}" download="${esc(f.name)}">${esc(f.name)}</a> <em>${human(
@@ -283,13 +324,31 @@ export default function Questionnaire({ data }) {
   const send = async () => {
     setSending(true);
     setSendErr("");
-    const joined = Object.values(files)
-      .flat()
-      .map((f) => ({
-        filename: f.name,
-        content: String(f.data || "").split(",")[1] || "",
-      }))
-      .filter((f) => f.content);
+
+    // Les images sont déjà intégrées au récapitulatif : on ne joint que le reste,
+    // et on reste sous la taille maximale d'une requête.
+    let html = buildHtml();
+    const dropped = [];
+    let used = html.length;
+
+    if (used > MAX_ENVOI) {
+      html = buildHtml(true);
+      used = html.length;
+      dropped.push("les images");
+    }
+
+    const joined = [];
+    for (const f of Object.values(files).flat()) {
+      if (isImage(f)) continue;
+      const content = String(f.data || "").split(",")[1] || "";
+      if (!content) continue;
+      if (used + content.length > MAX_ENVOI) {
+        dropped.push(f.name);
+        continue;
+      }
+      joined.push({ filename: f.name, content });
+      used += content.length;
+    }
 
     try {
       const res = await fetch("/api/submit", {
@@ -298,13 +357,22 @@ export default function Questionnaire({ data }) {
         body: JSON.stringify({
           title: data.title,
           slug: data.slug,
-          html: buildHtml(),
+          html,
           files: joined,
         }),
       });
       const out = await res.json().catch(() => ({}));
       if (res.ok && out.ok) {
         setSent(true);
+        if (dropped.length) {
+          setSendErr(
+            `Envoyé, mais trop lourd pour être joint : ${dropped.join(", ")}. Envoyez ces éléments à contact@odune.fr.`
+          );
+        }
+      } else if (res.status === 413) {
+        setSendErr(
+          "Les pièces jointes sont trop lourdes pour l'envoi. Retirez les plus gros fichiers, renvoyez, puis transmettez-les à contact@odune.fr."
+        );
       } else if (out.reason === "not_configured") {
         setSendErr(
           "L'envoi automatique n'est pas encore activé. Cliquez sur « Exporter les réponses » et envoyez le fichier obtenu à contact@odune.fr."
