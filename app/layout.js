@@ -7,6 +7,7 @@ export const metadata = {
   title: "Odune · Questionnaires de cadrage",
   description:
     "Deux questionnaires de cadrage Odune : Patrinove et la marque de soins intimes.",
+  robots: { index: false, follow: false, nocache: true },
 };
 
 export default function RootLayout({ children }) {

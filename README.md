@@ -90,7 +90,28 @@ Ensuite, chaque `git push` redéploie automatiquement.
 
 ### Recevoir les réponses par mail
 
-Aujourd'hui les réponses restent dans le navigateur de la personne qui remplit : elle exporte
-et t'envoie le fichier. Pour qu'elles arrivent directement dans ta boîte mail ou dans une base,
-il faut ajouter une route d'API et un service d'envoi. Une demi-journée de travail, à faire
-seulement si tu veux que Mehdi n'ait rien à renvoyer.
+Le bouton « Envoyer à Odune » en fin de questionnaire envoie tout par mail à **odunepro@gmail.com** :
+le récapitulatif complet en pièce jointe, avec les réponses, les liens, les notes et les images
+intégrées, plus les fichiers joints tant qu'ils tiennent dans l'enveloppe.
+
+Il reste une clé à créer, une seule fois :
+
+1. Créer un compte sur https://resend.com avec **odunepro@gmail.com**
+2. **API Keys → Create API Key**, copier la clé
+3. Sur Vercel, projet `questionsm.cherif` → **Settings → Environment Variables**
+4. Ajouter `RESEND_API_KEY` avec cette valeur, pour les trois environnements
+5. **Deployments → Redeploy** sur le dernier déploiement
+
+Tant que la clé n'est pas là, le bouton affiche un message qui renvoie vers l'export manuel.
+Rien ne casse.
+
+Deux variables facultatives : `NOTIFY_EMAIL` pour changer l'adresse de réception, et `MAIL_FROM`
+pour l'expéditeur. Par défaut l'expéditeur est celui de test de Resend, qui n'autorise l'envoi
+que vers l'adresse du compte. Pour écrire depuis `contact@odune.fr`, il faut vérifier le domaine
+odune.fr dans Resend, puis renseigner `MAIL_FROM`.
+
+### Confidentialité
+
+Le site est en `noindex` et son `robots.txt` interdit tout robot : il ne remontera pas dans Google.
+Il reste accessible à qui a le lien, sauf si la protection Vercel est activée dans
+**Settings → Deployment Protection**.

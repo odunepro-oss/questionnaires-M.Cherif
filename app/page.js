@@ -13,8 +13,13 @@ export default function Home() {
         </p>
         <p className="lede">
           Répondez librement, en une ligne ou en dix. Une réponse « je ne sais pas encore »
-          est une information utile. Vos réponses s'enregistrent dans votre navigateur au fur
-          et à mesure : vous pouvez fermer et revenir plus tard.
+          est une information utile.
+        </p>
+        <p className="lede">
+          Vos réponses s'enregistrent au fur et à mesure dans ce navigateur, sur cet appareil :
+          vous pouvez fermer et revenir plus tard, mais reprenez depuis le même ordinateur.
+          Les fichiers joints, eux, ne sont pas conservés d'une session à l'autre.
+          À la fin, un bouton envoie l'ensemble à Odune.
         </p>
 
         <div className="cards">

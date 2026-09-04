@@ -12,7 +12,7 @@ const human = (n) => (n > 1048576 ? `${(n / 1048576).toFixed(1)} Mo` : `${Math.m
 /* ------------------------------------------------------------------ */
 /*  Champ de réponse : hauteur automatique, pas de boîte              */
 /* ------------------------------------------------------------------ */
-function Grow({ id, value, onChange, placeholder, min = 40, className = "ans" }) {
+function Grow({ id, value, onChange, placeholder, min = 40, className = "ans", aria }) {
   const ref = useRef(null);
 
   const grow = useCallback(() => {
@@ -29,6 +29,7 @@ function Grow({ id, value, onChange, placeholder, min = 40, className = "ans" })
       ref={ref}
       id={id}
       className={`${className}${value ? " filled" : ""}`}
+      aria-label={aria}
       value={value}
       placeholder={placeholder}
       rows={1}
@@ -114,6 +115,7 @@ function Extras({ gi, label, files, onAdd, onRemove, note, onNote }) {
       <Grow
         id={`note-${gi}`}
         className="note-field"
+        aria="Liens ou remarque libre pour ce bloc"
         min={34}
         value={note}
         onChange={onNote}
@@ -138,6 +140,9 @@ export default function Questionnaire({ data }) {
   const [ready, setReady] = useState(false);
   const [saveOk, setSaveOk] = useState(true);
   const [copied, setCopied] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [sent, setSent] = useState(false);
+  const [sendErr, setSendErr] = useState("");
 
   useEffect(() => {
     try {
@@ -166,7 +171,19 @@ export default function Questionnaire({ data }) {
     }
   }, [answers, notes, ready, data.slug]);
 
-  const done = Object.values(answers).filter((v) => v && v.trim()).length;
+  const filled = Object.values(answers).filter((v) => v && v.trim()).length;
+
+  useEffect(() => {
+    const guard = (e) => {
+      if (!filled || sent) return;
+      e.preventDefault();
+      e.returnValue = "";
+    };
+    window.addEventListener("beforeunload", guard);
+    return () => window.removeEventListener("beforeunload", guard);
+  }, [filled, sent]);
+
+  const done = filled;
   const pct = total ? (done / total) * 100 : 0;
 
   /* --------- export texte --------- */
@@ -196,8 +213,8 @@ export default function Questionnaire({ data }) {
     }
   };
 
-  /* --------- export HTML autonome --------- */
-  const exportHtml = () => {
+  /* --------- récapitulatif HTML autonome --------- */
+  const buildHtml = () => {
     const esc = (s) =>
       String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
     const linkify = (s) =>
@@ -249,15 +266,61 @@ export default function Questionnaire({ data }) {
       "figure img{width:100%;border:1px solid rgba(38,27,26,.12);border-radius:6px;display:block}" +
       "figcaption{font-size:10.5px;color:#635B5A;padding-top:6px}";
 
-    const doc = `<!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><title>Odune · ${esc(
+    return `<!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><title>Odune · ${esc(
       data.title
     )}</title><style>${css}</style></head><body>${body}</body></html>`;
-    const url = URL.createObjectURL(new Blob([doc], { type: "text/html" }));
+  };
+
+  const exportHtml = () => {
+    const url = URL.createObjectURL(new Blob([buildHtml()], { type: "text/html" }));
     const a = document.createElement("a");
     a.href = url;
     a.download = `odune-cadrage-${data.slug}.html`;
     a.click();
     setTimeout(() => URL.revokeObjectURL(url), 2000);
+  };
+
+  /* --------- envoi à Odune --------- */
+  const send = async () => {
+    setSending(true);
+    setSendErr("");
+    const joined = Object.values(files)
+      .flat()
+      .map((f) => ({
+        filename: f.name,
+        content: String(f.data || "").split(",")[1] || "",
+      }))
+      .filter((f) => f.content);
+
+    try {
+      const res = await fetch("/api/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: data.title,
+          slug: data.slug,
+          html: buildHtml(),
+          files: joined,
+        }),
+      });
+      const out = await res.json().catch(() => ({}));
+      if (res.ok && out.ok) {
+        setSent(true);
+      } else if (out.reason === "not_configured") {
+        setSendErr(
+          "L'envoi automatique n'est pas encore activé. Cliquez sur « Exporter les réponses » et envoyez le fichier obtenu à contact@odune.fr."
+        );
+      } else {
+        setSendErr(
+          "L'envoi a échoué. Cliquez sur « Exporter les réponses » et envoyez le fichier obtenu à contact@odune.fr."
+        );
+      }
+    } catch (e) {
+      setSendErr(
+        "L'envoi a échoué, peut-être un problème de connexion. Cliquez sur « Exporter les réponses » et envoyez le fichier obtenu à contact@odune.fr."
+      );
+    }
+    setSending(false);
   };
 
   let counter = 0;
@@ -328,6 +391,27 @@ export default function Questionnaire({ data }) {
           </section>
         ))}
 
+        <section className="end">
+          <h3>Quand vous avez terminé</h3>
+          <div>
+            <p>
+              Rien ne nous parvient tant que vous n'avez pas cliqué. Ce bouton nous envoie vos
+              réponses, vos liens, vos notes et vos fichiers. Inutile d'avoir tout rempli : ce
+              qui manque, nous en parlerons de vive voix.
+            </p>
+            <button className="send" type="button" onClick={send} disabled={sending || sent}>
+              {sent ? "Envoyé, merci" : sending ? "Envoi en cours…" : "Envoyer à Odune"}
+            </button>
+            {sent && (
+              <p className="state">
+                Bien reçu. Vous pouvez fermer cette page. Si vous complétez plus tard, renvoyez
+                simplement le tout.
+              </p>
+            )}
+            {sendErr && <p className="state bad">{sendErr}</p>}
+          </div>
+        </section>
+
         <p className="foot">Odune · Studio-conseil, Paris · contact@odune.fr</p>
       </main>
 
@@ -339,13 +423,13 @@ export default function Questionnaire({ data }) {
           <button className="btn" type="button" onClick={copy}>
             {copied ? "Copié" : "Copier le texte"}
           </button>
-          <button className="btn filled" type="button" onClick={exportHtml}>
+          <button className="btn" type="button" onClick={exportHtml}>
             Exporter les réponses
           </button>
           <p className="note">
             {saveOk
-              ? "Réponses, liens et notes enregistrés automatiquement dans ce navigateur. Les fichiers joints ne le sont pas : exportez avant de fermer."
-              : "Enregistrement automatique indisponible dans ce navigateur. Pensez à exporter avant de fermer."}
+              ? "Réponses, liens et notes enregistrés automatiquement dans ce navigateur. Les fichiers joints ne le sont pas : envoyez ou exportez avant de fermer."
+              : "Enregistrement automatique indisponible dans ce navigateur. Pensez à envoyer avant de fermer."}
           </p>
         </div>
       </div>
