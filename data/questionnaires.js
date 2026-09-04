@@ -52,7 +52,7 @@ export const QUESTIONNAIRES = {
         title: "Ce qui existe déjà",
         note: "Inutile de refaire ce qui fonctionne. Autant savoir ce qui a été tenté.",
         upload:
-          "Captures de campagnes, de statistiques, de messages types, de publications LinkedIn.",
+          "Plaquettes, documents de présentation, captures de campagnes ou de statistiques, publications LinkedIn.",
         questions: [
           {
             q: "Comment arrivent vos clients aujourd'hui : publicité, réseau, recommandation, apporteurs d'affaires ?",
@@ -64,8 +64,12 @@ export const QUESTIONNAIRES = {
           },
           { q: "Combien de rendez-vous par mois, et combien se transforment en dossier ?" },
           {
-            q: "Qu'est-ce qui a déjà été fait côté marque et communication, et par qui ?",
-            hint: "Logo, site, réseaux sociaux, plaquette, photos, vidéos. En interne, par une agence, par un indépendant.",
+            q: "Au-delà du site et des réseaux, quels supports vos clients voient-ils de vous ?",
+            hint: "Plaquette, document de présentation, proposition commerciale, support de rendez-vous, signature de mail, cartes. Ce qui existe, même imparfait.",
+          },
+          {
+            q: "Avez-vous des exemples de publicités ou de contenus qui ont bien marché ?",
+            hint: "Ceux qui ont amené des demandes, pas ceux qui ont fait des vues. Et si vous savez pourquoi, dites-le.",
           },
           { q: "Qui gère le site aujourd'hui, et avec quel outil ?" },
           {
@@ -73,8 +77,8 @@ export const QUESTIONNAIRES = {
             hint: "COA, MIA, IOBSP, IAS. Ces mentions sont obligatoires sur le site et n'y figurent pas aujourd'hui : autant les remettre au passage.",
           },
           {
-            q: "Sur le projet des 2 millions : qu'est-ce qui peut être dit publiquement, et à partir de quand ?",
-            hint: "Nous n'avons pas besoin du détail. Nous avons besoin de savoir ce que la communication a le droit d'annoncer, et ce qu'elle doit taire.",
+            q: "Les 2 millions d'euros, c'est quoi exactement : une levée de fonds, un investissement, autre chose ?",
+            hint: "Quel est l'objectif de cette opération, et à quoi servira l'argent ? Et peut-on communiquer dessus, ou pas encore ?",
           },
         ],
       },
