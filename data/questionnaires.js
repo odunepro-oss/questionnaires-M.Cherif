@@ -73,6 +73,10 @@ export const QUESTIONNAIRES = {
           },
           { q: "Qui gère le site aujourd'hui, et avec quel outil ?" },
           {
+            q: "Que se passe-t-il concrètement entre le premier contact et la signature, puis après ?",
+            hint: "Ce que reçoit le client une fois le rendez-vous pris, ce qu'il repart avec à la fin, comment vous le tenez informé pendant le montage du dossier, et ce qui se passe une fois le dossier signé. Décrivez simplement ce qui existe aujourd'hui, même si c'est peu ou informel.",
+          },
+          {
             q: "Quel est votre numéro ORIAS, et quels statuts détenez-vous ?",
             hint: "COA, MIA, IOBSP, IAS. Ces mentions sont obligatoires sur le site et n'y figurent pas aujourd'hui : autant les remettre au passage.",
           },
@@ -93,6 +97,10 @@ export const QUESTIONNAIRES = {
           {
             q: "Jusqu'où peut-on aller sur la marque ? Le nom et le logo sont-ils intouchables, ou tout est ouvert ?",
             hint: "Faire évoluer une identité ou en construire une nouvelle ne représentent ni le même travail, ni le même délai. C'est vous qui fixez la limite.",
+          },
+          {
+            q: "Y a-t-il des choses que vous aimeriez mettre en place et que vous n'avez jamais eu le temps de faire ?",
+            hint: "Une synthèse remise au client, un suivi pendant l'attente du dossier, un point annuel, un document à transmettre à un confrère, autre chose. C'est juste pour savoir ce qui est prévu ou souhaité. Nous ajusterons ensuite : garder, retirer, ajouter.",
           },
           {
             q: "Qui, chez vous, peut consacrer du temps au contenu et aux événements ?",
@@ -200,6 +208,10 @@ export const QUESTIONNAIRES = {
           {
             q: "Qui gérera le site au quotidien une fois en ligne ?",
             hint: "Cela détermine le niveau de formation à prévoir à la livraison.",
+          },
+          {
+            q: "Avez-vous déjà réfléchi à l'expérience d'achat, de la découverte à la réception du colis ?",
+            hint: "Emballage, discrétion de l'expédition, notice glissée dans le colis, message de suivi, réachat. Dites ce qui est déjà décidé et ce que vous imaginez, même vaguement. C'est juste pour savoir d'où l'on part : nous ajusterons ensuite, garder, retirer, ajouter.",
           },
           {
             q: "Souhaitez-vous aussi être accompagnés sur la communication et la publicité ?",
