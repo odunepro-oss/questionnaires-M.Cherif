@@ -121,18 +121,20 @@ export const QUESTIONNAIRES = {
           },
           { q: "Qu'est-ce qui rend vos formules différentes de ce qui existe déjà ?" },
           { q: "Quel laboratoire ou façonnier vous accompagne ?" },
+          {
+            q: "Quel prix de vente public envisagez-vous, par référence ?",
+            hint: "Même une fourchette. C'est ce qui fixe le niveau de gamme, et donc tout le travail d'image qui suit.",
+          },
         ],
       },
       {
         title: "Le réglementaire",
         note: "C'est le point bloquant pour la suite. Sans ces réponses, aucun texte de site ni de packaging ne peut être arrêté.",
-        upload: "Dossiers, attestations, rapports de tests, projets d'étiquetage.",
         questions: [
           {
-            q: "Le statut cosmétique est-il confirmé pour chaque référence ?",
-            hint: "Un produit destiné à la muqueuse interne ne relève pas du même régime qu'un soin de la peau intime externe.",
+            q: "Où en sont les formalités réglementaires : dossiers d'information produit, notification européenne ?",
+            hint: "Nous savons que l'usage est externe, sur la vulve, donc le cadre cosmétique. Ce qui nous intéresse ici, c'est le calendrier.",
           },
-          { q: "Les dossiers d'information produit et la notification européenne sont-ils faits ?" },
           {
             q: "Quelles allégations sont déjà validées et opposables ?",
             hint: "Ce que vous avez le droit d'écrire noir sur blanc, preuves à l'appui, sur le produit fini.",
@@ -147,7 +149,10 @@ export const QUESTIONNAIRES = {
           "Références visuelles, marques qui vous parlent, univers que vous aimez, ou au contraire ce que vous refusez.",
         questions: [
           { q: "À qui s'adresse la gamme en priorité, et à quel moment de vie ?" },
-          { q: "Où voulez-vous vendre : e-commerce, pharmacie, institut, prescription, export ?" },
+          {
+            q: "Où voulez-vous vendre : e-commerce, pharmacie, institut, prescription, export ?",
+            hint: "À ce stade, une intention suffit. Ce qui sera réellement mis en place dépendra du budget et de ce qui est faisable au lancement.",
+          },
           {
             q: "Quelles marques vous servent de référence, en bien comme en mal ?",
             hint: "Dans le soin intime ou ailleurs. Dites ce que vous leur enviez, et ce que vous leur reprochez.",
@@ -159,13 +164,28 @@ export const QUESTIONNAIRES = {
         ],
       },
       {
-        title: "Ce qui existe déjà",
-        upload: "Nom, logo, moodboards, essais graphiques, maquettes, comptes réseaux.",
+        title: "La marque et le site",
+        note: "Ce qui existe déjà, et ce qu'il reste à construire.",
         questions: [
-          { q: "Y a-t-il déjà un nom, un logo, un début d'identité, des visuels, des comptes sur les réseaux ?" },
+          {
+            q: "Le nom est-il arrêté, et est-il déposé à l'INPI ?",
+            hint: "S'il est encore libre, il peut évoluer. S'il est déposé, on construit autour.",
+          },
+          {
+            q: "Qui produira les visuels produits : photos, packshots, vidéos ? Est-ce déjà prévu ?",
+            hint: "Sur une marque cosmétique, l'image du produit fait la moitié du travail. Autant savoir tout de suite si elle existe, si elle est à créer, ou si personne n'y a encore pensé.",
+          },
+          {
+            q: "Le site sera une boutique en ligne. Shopify vous convient-il pour démarrer ?",
+            hint: "C'est ce que nous recommandons au lancement : produits, stocks, commandes et promotions gérés sans développeur. Si vous avez une préférence ou une contrainte, dites-le.",
+          },
           {
             q: "Qui gérera le site au quotidien une fois en ligne ?",
-            hint: "Cela détermine le choix de la plateforme et le niveau de formation à prévoir.",
+            hint: "Cela détermine le niveau de formation à prévoir à la livraison.",
+          },
+          {
+            q: "Souhaitez-vous aussi être accompagnés sur la communication et la publicité ?",
+            hint: "On peut très bien en décider plus tard. Le savoir maintenant permet simplement de prévoir ce qui doit l'être dès le départ.",
           },
         ],
       },
