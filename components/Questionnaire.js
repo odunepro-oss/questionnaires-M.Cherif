@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 const KEY = (slug) => `odune-cadrage-${slug}-v2`;
@@ -333,9 +332,6 @@ export default function Questionnaire({ data }) {
 
       <main className="shell">
         <header className="qhead">
-          <Link href="/" className="back">
-            ← Les deux questionnaires
-          </Link>
           <h1>{data.title}</h1>
           {data.lede.map((p, i) => (
             <p className="lede" key={i}>

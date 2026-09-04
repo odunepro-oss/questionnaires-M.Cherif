@@ -225,6 +225,13 @@ export const QUESTIONNAIRES = {
 
 export const ORDER = ["patrinove", "soins-intimes"];
 
+// Un lien par société. Chaque adresse est unique et non devinable :
+// c'est elle qui sépare les deux projets, puisque les associés diffèrent.
+export const ACCES = {
+  "patrinove-40bb05b0f4": "patrinove",
+  "soins-5015ff0bb5": "soins-intimes",
+};
+
 export function countQuestions(key) {
   return QUESTIONNAIRES[key].groups.reduce((n, g) => n + g.questions.length, 0);
 }
