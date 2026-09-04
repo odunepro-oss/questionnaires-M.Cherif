@@ -169,6 +169,8 @@ textarea.ans.filled { border-bottom-color: var(--ink-30); }
 .attach:hover { border-color: var(--ink); }
 .attach:hover span { color: var(--grey); }
 
+.extras .xnote { margin: 10px 0 0; font-size: 11.5px; color: var(--grey); max-width: 60ch; line-height: 1.6; }
+.extras .xnote.bad { color: var(--ink); }
 .extras .grid { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
 .extras figure {
   position: relative; margin: 0; width: 118px;

@@ -6,6 +6,7 @@ const KEY = (slug) => `odune-cadrage-${slug}-v2`;
 const MAX_EMBED = 4 * 1024 * 1024; // au-delà, le fichier n'est pas intégré à l'export
 const MAX_DIM = 1800; // les images sont réduites avant tout envoi
 const MAX_ENVOI = 3.2 * 1024 * 1024; // limite de taille d'une requête, marge comprise
+const MAX_FICHIER = 2 * 1024 * 1024; // par document, hors images qui sont réduites
 
 const isImage = (f) => (f.type || "").startsWith("image/");
 const human = (n) => (n > 1048576 ? `${(n / 1048576).toFixed(1)} Mo` : `${Math.max(1, Math.round(n / 1024))} Ko`);
@@ -45,6 +46,7 @@ function Grow({ id, value, onChange, placeholder, min = 40, className = "ans", a
 function Extras({ gi, label, files, onAdd, onRemove, note, onNote }) {
   const input = useRef(null);
   const [over, setOver] = useState(false);
+  const [refus, setRefus] = useState([]);
 
   // Les photos sortent des téléphones en plusieurs mégaoctets. On les réduit
   // avant tout, sans quoi l'envoi dépasse la taille maximale d'une requête.
@@ -82,9 +84,14 @@ function Extras({ gi, label, files, onAdd, onRemove, note, onNote }) {
     });
 
   const take = (list) => {
+    setRefus([]);
     [...list].forEach(async (f) => {
       const small = await shrink(f);
       if (small) return onAdd(small);
+      if (f.size > MAX_FICHIER) {
+        setRefus((r) => [...r, f.name]);
+        return;
+      }
       const reader = new FileReader();
       reader.onload = () =>
         onAdd({ name: f.name, type: f.type, size: f.size, data: reader.result });
@@ -127,6 +134,16 @@ function Extras({ gi, label, files, onAdd, onRemove, note, onNote }) {
         Joindre un fichier <span>ou déposer ici</span>
       </button>
       <input ref={input} type="file" multiple hidden onChange={(e) => take(e.target.files)} />
+      <p className="xnote">
+        Documents de moins de 2 Mo. Les photos sont réduites automatiquement, quel que soit
+        leur poids d'origine.
+      </p>
+      {refus.length > 0 && (
+        <p className="xnote bad">
+          Trop lourd, non ajouté : {refus.join(", ")}. Compressez le fichier, ou envoyez-le à
+          contact@odune.fr.
+        </p>
+      )}
 
       {files.length > 0 && (
         <div className="grid">
